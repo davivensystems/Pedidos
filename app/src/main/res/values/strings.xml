@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Pedidos</string>
+    <string name="accessibility_service_description">Permite que la app escriba y envíe el pedido dictado directamente en el grupo de WhatsApp configurado.</string>
+</resources>

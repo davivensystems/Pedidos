@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre EXACTO del grupo de WhatsApp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/campoGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ej: Pedidos Grupo Principal" />
+
+    <CheckBox
+        android:id="@+id/checkSiempre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usar siempre este grupo" />
+
+    <Button
+        android:id="@+id/botonGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Para que el envío sea automático, activa el servicio de accesibilidad:"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/botonAccesibilidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Abrir Accesibilidad" />
+
+</LinearLayout>
