@@ -75,7 +75,7 @@ class OrderAccessibilityService : AccessibilityService() {
     fun beginAutomation() {
         attempts = 0
         state = State.ABRIR_BUSQUEDA
-        handler.postDelayed({ step() }, 1200)
+        handler.postDelayed({ step() }, 2000)
     }
 
     private fun step() {
@@ -125,7 +125,9 @@ class OrderAccessibilityService : AccessibilityService() {
             }
 
             State.PULSAR_ENVIAR -> {
-                val boton = findByViewId(root, "send") ?: findByDesc(root, listOf("Enviar", "Send"))
+                val boton = findByViewId(root, "send")
+                    ?: findByDesc(root, listOf("Enviar", "Send"))
+                    ?: findUltimoBotonImagenClicable(root)
                 if (boton != null && clickNode(boton)) {
                     Log.i(TAG, "Pedido enviado automáticamente")
                 } else {
@@ -146,7 +148,7 @@ class OrderAccessibilityService : AccessibilityService() {
 
     private fun retryOrGiveUp(motivo: String) {
         attempts++
-        if (attempts > 8) {
+        if (attempts > 16) {
             Log.w(TAG, "Se abandona el paso automático: $motivo")
             finish()
         } else {
@@ -212,6 +214,24 @@ class OrderAccessibilityService : AccessibilityService() {
             if (encontrado != null) return encontrado
         }
         return null
+    }
+
+    /**
+     * Último recurso para encontrar el botón de enviar: en la pantalla de un chat,
+     * suele ser el último botón/icono clicable del árbol (normalmente abajo a la derecha).
+     */
+    private fun findUltimoBotonImagenClicable(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+        var ultimo: AccessibilityNodeInfo? = null
+        fun recorrer(nodo: AccessibilityNodeInfo) {
+            val esBotonImagen = nodo.isClickable &&
+                (nodo.className == "android.widget.ImageButton" || nodo.className == "android.widget.ImageView")
+            if (esBotonImagen) ultimo = nodo
+            for (i in 0 until nodo.childCount) {
+                nodo.getChild(i)?.let { recorrer(it) }
+            }
+        }
+        recorrer(root)
+        return ultimo
     }
 
     private fun clickNode(nodo: AccessibilityNodeInfo): Boolean {

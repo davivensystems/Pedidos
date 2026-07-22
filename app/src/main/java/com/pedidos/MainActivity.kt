@@ -133,16 +133,31 @@ class MainActivity : AppCompatActivity() {
         iniciarReconocimiento()
     }
 
-    private fun agregarFrase(frase: String) {
+    private fun agregarFrase(fraseOriginal: String) {
+        val frase = ConversorNumeros.convertir(fraseOriginal)
+
         if (clienteCapturado == null) {
             clienteCapturado = frase
             actualizarEstadoTexto("Cliente: $frase\n\nAhora di el primer producto")
         } else {
-            productos.add(frase)
+            // Si en la misma frase ha dicho varios productos seguidos
+            // (ej: "2 cajas de longanizas y 1 de lomo"), los separamos en líneas distintas.
+            productos.addAll(dividirProductos(frase))
             actualizarEstadoTexto(
-                "Cliente: $clienteCapturado\n\nProductos:\n${productos.joinToString("\n")}\n\nDi el siguiente producto o di ENVIAR"
+                "Cliente: $clienteCapturado\n\nProductos:\n${formatearProductos()}\n\nDi el siguiente producto o di ENVIAR"
             )
         }
+    }
+
+    /** Separa varios productos dichos en la misma frase, detectando " y " seguido de un número. */
+    private fun dividirProductos(frase: String): List<String> {
+        return frase.split(Regex("\\s+y\\s+(?=\\d)"))
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+    }
+
+    private fun formatearProductos(): String {
+        return productos.joinToString("\n") { "- $it" }
     }
 
     private fun finalizarYEnviar() {
@@ -158,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         val mensaje = buildString {
             append(cliente)
             append("\n\n")
-            append(productos.joinToString("\n"))
+            append(formatearProductos())
         }
 
         actualizarEstadoTexto("Enviando pedido a WhatsApp...\n\n$mensaje")
